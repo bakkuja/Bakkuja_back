@@ -16,7 +16,7 @@ public interface BoardService {
 
     public Long save(final BoardDTO boardDTO);
 
-    public Page<Board> findByCategoryId(final int categoryId, final Pageable pageable);
+    public List<Board> findByCategoryId(final int categoryId);
 
     public void update(final Long id, final BoardRequestDTO params);
 
@@ -29,4 +29,6 @@ public interface BoardService {
     public BoardResponseDTO findById(final Long postId);
 
     public List<ImageResponseDTO> findByPostId(Long postId);
+
+    public List<Board> findAllPostId();
 }

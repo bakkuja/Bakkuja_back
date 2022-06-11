@@ -1,6 +1,7 @@
 package com.bakooza.bakooza.Controller;
 
 import com.bakooza.bakooza.DTO.*;
+import com.bakooza.bakooza.Entity.Board;
 import com.bakooza.bakooza.Service.AwsS3Service;
 import com.bakooza.bakooza.Service.BoardServiceImpl;
 import com.bakooza.bakooza.Service.JwtUtils;
@@ -18,9 +19,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/boards")
@@ -71,12 +74,6 @@ public class BoardController {
 
     }
 
-    // 게시판 조회
-    @GetMapping("/category")
-    public Page<BoardResponseDTO> findAll(@RequestParam final int categoryId,
-                                          @PageableDefault(sort = "post_id", direction = Sort.Direction.DESC) final Pageable pageable) {
-        return boardService.findByCategoryId(categoryId, pageable).map(BoardResponseDTO::new);
-    }
 
     // 게시글 수정
     @PatchMapping("/{postId}")
@@ -145,6 +142,47 @@ public class BoardController {
         map.put("image", boardService.findByPostId(postId));
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
+
+    // 게시판 조회
+    @GetMapping("/category")
+    public ResponseEntity<Object> findAllByCategoryId(@RequestParam final int categoryId) {
+//        return new ResponseEntity<>(boardService.findByCategoryId(categoryId, pageable).map(BoardResponseDTO::new), HttpStatus.OK);
+        Map<String, Object> map = new HashMap<>();
+        Long postId;
+        List<ImageResponseDTO> imageList = new ArrayList<>();
+        List<Board> posts = boardService.findByCategoryId(categoryId);
+        map.put("post", posts);
+        for (Board post : posts) {
+            List<ImageResponseDTO> image = boardService.findByPostId(post.getPostId());
+            if (!image.isEmpty()){
+                imageList.add(image.get(0));
+            }
+        }
+        map.put("image", imageList);
+
+        return new ResponseEntity<>(map, HttpStatus.OK);
+    }
+
+    // 게시판 전체 조회
+    @GetMapping("/items")
+    public ResponseEntity<Object> findAll() {
+        Map<String, Object> map = new HashMap<>();
+        Long postId;
+        List<ImageResponseDTO> imageList = new ArrayList<>();
+        List<BoardResponseDTO> posts = boardService.findAllPostId().stream().map(BoardResponseDTO::new).collect(Collectors.toList());
+        map.put("post", posts);
+        for (BoardResponseDTO post : posts) {
+            List<ImageResponseDTO> image = boardService.findByPostId(post.getPostId());
+            if (!image.isEmpty()){
+                imageList.add(image.get(0));
+            }
+        }
+        map.put("image", imageList);
+
+        return new ResponseEntity<>(map, HttpStatus.OK);
+    }
+
+
 
     //만료된 게시글 삭제 추후 스케쥴링
     @DeleteMapping("/delete")

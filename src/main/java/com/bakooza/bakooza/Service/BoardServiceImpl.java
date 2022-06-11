@@ -34,8 +34,8 @@ public class BoardServiceImpl implements BoardService {
 
     // 게시판 조회
     @Override
-    public Page<Board> findByCategoryId(final int categoryId, final Pageable pageable) {
-        return boardRepository.findByCategoryId(categoryId, pageable);
+    public List<Board> findByCategoryId(final int categoryId) {
+        return boardRepository.findByCategoryId(categoryId);
     }
 
     // 게시글 수정
@@ -80,5 +80,10 @@ public class BoardServiceImpl implements BoardService {
     public List<ImageResponseDTO> findByPostId(Long postId) {
         List<ImageResponseDTO> entity = postImageRepository.findByPostId(postId);
         return entity;
+    }
+
+    @Override
+    public List<Board> findAllPostId() {
+        return boardRepository.findAll(Sort.by(Sort.Direction.DESC, "postId"));
     }
 }
