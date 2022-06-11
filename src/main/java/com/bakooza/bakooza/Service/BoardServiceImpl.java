@@ -7,9 +7,7 @@ import com.bakooza.bakooza.Repository.PostImageRepository;
 import com.bakooza.bakooza.Util.ErrorHandler.CustomException;
 import com.bakooza.bakooza.Util.ErrorHandler.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +15,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
@@ -30,8 +29,8 @@ public class BoardServiceImpl implements BoardService {
 
     // 게시판 조회
     @Override
-    public Page<Board> findByCategoryId(final int categoryId, final Pageable pageable) {
-        return boardRepository.findByCategoryId( pageable);
+    public List<Board> findByCategoryId(final int categoryId) {
+        return boardRepository.findByCategoryId(categoryId);
     }
 
     // 게시글 수정
@@ -55,11 +54,9 @@ public class BoardServiceImpl implements BoardService {
     }
 
     // 게시글 검색
-
     @Override
-    public Page<Board> search(final String keyword, final Pageable pageable) {
-        PageRequest pageRequest = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "post_id"));
-        return boardRepository.findByTitleContainingAndIsDeleted("%" + keyword + "%", pageRequest);
+    public List<Board> search(final String keyword) {
+        return boardRepository.findByTitleContainingAndIsDeleted("%" + keyword + "%");
     }
 
     // 게시글 조회
@@ -75,6 +72,12 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public List<ImageResponseDTO> findByPostId(Long postId) {
         List<ImageResponseDTO> entity = postImageRepository.findByPostId(postId);
+        log.info("image path = {}", entity.toString());
         return entity;
+    }
+
+    @Override
+    public List<Board> findAllPostId() {
+        return boardRepository.findAll(Sort.by(Sort.Direction.DESC, "postId"));
     }
 }

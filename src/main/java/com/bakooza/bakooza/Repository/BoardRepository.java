@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -18,14 +19,12 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     Optional<Board> findByPostIdAndIsDeleted(Long postId, int yN);
 
     @Query(value = "SELECT * FROM board WHERE is_deleted = false AND title LIKE :keyword", nativeQuery = true)
-    Page<Board> findByTitleContainingAndIsDeleted(@Param("keyword") String keyword,
-        final Pageable pageable);
+    List<Board> findByTitleContainingAndIsDeleted(@Param("keyword") String keyword);
 
     @Query(value = "SELECT * FROM board WHERE category_id = :categoryId AND is_deleted = false ORDER BY post_id DESC",
-        countQuery = "SELECT COUNT(post_id) FROM Board WHERE category_id = :categoryId AND is_deleted = false",
-        nativeQuery = true)
-    Page<Board> findByCategoryId(
-        final Pageable pageable);
+           countQuery = "SELECT COUNT(post_id) FROM Board WHERE category_id = :categoryId AND is_deleted = false",
+           nativeQuery = true)
+    List<Board> findByCategoryId(@Param("categoryId") final int categoryId);
 
     @Modifying(clearAutomatically = true)
     @Query(value = "DELETE FROM board WHERE DATEDIFF(CURDATE(), deleted_date) >= 7", nativeQuery = true)

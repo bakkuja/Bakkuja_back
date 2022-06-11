@@ -1,5 +1,6 @@
 package com.bakooza.bakooza.Entity;
 
+import com.bakooza.bakooza.DTO.BoardResponseDTO;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
