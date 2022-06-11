@@ -50,16 +50,18 @@ public class BoardController {
 //                }
 //            }
             Long memberId = Long.parseLong(jwtUtils.getIdFromToken(accessToken.getAccessToken()));
-            String writer = String.valueOf(ms.findMemberById(memberId));
+            String writer = String.valueOf(ms.findMemberById(memberId).get().getNickname());
             BoardDTO boardDTO = new BoardDTO(params.getTitle(), params.getUserLocation(), params.getCategoryId(), params.getContent(), writer, memberId);
-            postId = boardService.save(boardDTO);
+            //postId = boardService.save(boardDTO);
+            postId = awsS3Service.uploadFile(multipartFile, boardService.save(boardDTO));
 //            if (flag) { // 이미지 파일이 첨부되어 있지 않다면
 //                postId = boardService.save(boardDTO);
 //            } else { // 이미지 파일이 첨부되어 있다면
-//                //postId = awsS3Service.uploadFile(multipartFile, boardService.save(params));
+//                //
 //            }
             //return findById(postId);
-            return new ResponseEntity<>("success", HttpStatus.OK);
+
+            return new ResponseEntity<>(postId, HttpStatus.OK);
         } else {
             Map<String, Object> fail = new HashMap<>();
             fail.put("fail", "fail");
@@ -70,23 +72,23 @@ public class BoardController {
     }
 
     // 게시판 조회
-//    @GetMapping("/category")
-//    public Page<BoardResponseDTO> findAll(@RequestParam final int categoryId,
-//                                          @PageableDefault(sort = "post_id", direction = Sort.Direction.DESC) final Pageable pageable) {
-//        return boardService.findByCategoryId(categoryId, pageable).map(BoardResponseDTO::new);
-//    }
+    @GetMapping("/category")
+    public Page<BoardResponseDTO> findAll(@RequestParam final int categoryId,
+                                          @PageableDefault(sort = "post_id", direction = Sort.Direction.DESC) final Pageable pageable) {
+        return boardService.findByCategoryId(categoryId, pageable).map(BoardResponseDTO::new);
+    }
 
     // 게시글 수정
     @PatchMapping("/{postId}")
-    public ResponseEntity<Object> update(@RequestHeader(value = "token") String token, @PathVariable final Long postId, @RequestPart final BoardRequestDTO params, @RequestPart(required = false) final @NotNull List<MultipartFile> multipartFile) {
+    public ResponseEntity<Object> update(@RequestHeader(value = "token") String token, @PathVariable final Long postId, @RequestPart final BoardRequestDTO params, @RequestPart(required = false) final @NotNull MultipartFile multipartFile) {
         if (jwtUtils.validateToken(token)) {
             boardService.update(postId, params);
             boolean flag = false;
-            for (MultipartFile file : multipartFile) {
-                if (file.isEmpty()) {
-                    flag = true;
-                }
-            }
+//            for (MultipartFile file : multipartFile) {
+//                if (file.isEmpty()) {
+//                    flag = true;
+//                }
+//            }
 
             List<ImageResponseDTO> entity = boardService.findByPostId(postId); // S3의 경로를 찾아오고
             for (ImageResponseDTO imageResponseDTO : entity) {
@@ -98,7 +100,10 @@ public class BoardController {
             }
 
             //return findById(postId);
-            return new ResponseEntity<>("success", HttpStatus.OK);
+            Map<String, Long> map = new HashMap<>();
+            map.put("postId", postId);
+
+            return new ResponseEntity<>(map, HttpStatus.OK);
         } else {
             Map<String, Object> fail = new HashMap<>();
             fail.put("fail", "fail");

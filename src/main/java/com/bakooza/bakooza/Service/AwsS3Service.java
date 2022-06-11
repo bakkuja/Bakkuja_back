@@ -7,7 +7,7 @@ import java.util.List;
 
 @Transactional
 public interface AwsS3Service {
-    public Long uploadFile(List<MultipartFile> multipartFile, Long postId);
+    public Long uploadFile(MultipartFile multipartFile, Long postId);
 
     public void deleteFile(String fileName);
 
