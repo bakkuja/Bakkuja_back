@@ -26,4 +26,6 @@ public interface BoardService {
     public List<ImageResponseDTO> findByPostId(Long postId);
 
     public List<Board> findAllPostId();
+
+    public void updateThumbnail(Long postId, String imagePath);
 }

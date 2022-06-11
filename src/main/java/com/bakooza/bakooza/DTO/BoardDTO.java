@@ -15,6 +15,7 @@ public class BoardDTO {
     private String content; // 내용
     private String writer; // 작성자
     private Long memberId; // 멤버 ID
+    private String thumbnail; // 썸네일
 
 
     public Board toEntity() {
@@ -25,6 +26,7 @@ public class BoardDTO {
                 .content(content)
                 .writer(writer)
                 .memberId(memberId)
+                .thumbnail(thumbnail)
                 .build();
     }
 }

@@ -14,6 +14,7 @@ public class BoardResponseDTO {
     private final String userLocation; //작성자 주소
     private final int views; // 조회 수
     private final LocalDateTime postDate; // 생성일
+    private final String thumbnail; // 썸네일
 
     public BoardResponseDTO(Board entity) {
         this.postId = entity.getPostId();
@@ -21,6 +22,7 @@ public class BoardResponseDTO {
         this.userLocation = entity.getUserLocation();
         this.views = entity.getViews();
         this.postDate = entity.getPostDate();
+        this.thumbnail = entity.getThumbnail();
     }
 
 }

@@ -42,8 +42,11 @@ public class Board {
     @Column(name = "is_deleted")
     private int isDeleted; // 글쓴이가 글을 지웠는지
 
+    @Column(name = "thumbnail")
+    private String thumbnail; // 썸네일
+
     @Builder
-    public Board(Long postId, String title, String userLocation, String content, String writer, int categoryId, long memberId) {
+    public Board(Long postId, String title, String userLocation, String content, String writer, int categoryId, long memberId, String thumbnail) {
         this.postId = postId;
         this.title = title;
         this.userLocation = userLocation;
@@ -51,6 +54,7 @@ public class Board {
         this.writer = writer;
         this.categoryId = categoryId;
         this.memberId = memberId;
+        this.thumbnail = thumbnail;
     }
 
     public void update(String title, String content, int categoryId, String writer) {

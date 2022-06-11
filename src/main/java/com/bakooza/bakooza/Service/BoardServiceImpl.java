@@ -76,8 +76,16 @@ public class BoardServiceImpl implements BoardService {
         return entity;
     }
 
+    // 모든 게시글 조회
     @Override
     public List<Board> findAllPostId() {
         return boardRepository.findAll(Sort.by(Sort.Direction.DESC, "postId"));
+    }
+
+    // 썸네일 추가
+
+    @Override
+    public void updateThumbnail(Long postId, String imagePath) {
+        boardRepository.updateThumbnail(postId, imagePath);
     }
 }

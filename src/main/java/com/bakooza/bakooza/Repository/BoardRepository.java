@@ -38,4 +38,8 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     @Query(value = "UPDATE board SET is_deleted = 1, deleted_date = CURDATE() WHERE post_id = :postId", nativeQuery = true)
     int saveImage(@Param("postId") Long postId);
 
+    @Modifying(clearAutomatically = true)
+    @Query(value = "UPDATE board SET thumbnail = :imagePath WHERE post_id = :postId", nativeQuery = true)
+    void updateThumbnail(@Param("postId") Long postId, @Param("imagePath") String imagePath);
+
 }
