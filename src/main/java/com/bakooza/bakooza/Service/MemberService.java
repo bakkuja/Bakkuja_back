@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -24,6 +25,7 @@ import java.util.HashMap;
 import java.util.Optional;
 
 @Service
+@Transactional
 @Slf4j
 public class MemberService {
 
@@ -149,5 +151,9 @@ public class MemberService {
     public Optional<Member> findMemberById(Long memberId) {
 
         return memberRepository.findById(memberId);
+    }
+
+    public void test(){
+        memberRepository.test();
     }
 }

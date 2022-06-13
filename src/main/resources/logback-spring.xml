@@ -1,30 +1,25 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<configuration debug="true">
+<configuration>
 
-    <!-- Appenders -->
-    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoders are assigned the type
+             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
         <encoder>
-            <Pattern>%d %5p [%c] %m%n</Pattern>
-        </encoder>
-    </appender>
-    <logger name="org.springframework.orm.jpa.JpaTransactionManager" level="INFO"/>
-    <root level="INFO">
-        <appender-ref ref="console"/> <!-- Console에 로그를 출력하고자 할 때 사용 -->
-    </root>
-
-    <appender name="console-infolog" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <Pattern>%d %5p %m%n</Pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <!-- Logger -->
-    <logger name="com.board" level="INFO" appender-ref="console" />
-    <logger name="jdbc.sqlonly" level="INFO" appender-ref="console-infolog" />
-    <logger name="jdbc.resultsettable" level="INFO" appender-ref="console-infolog" />
-
-    <!-- Root Logger -->
-    <root level="INFO">
-        <appender-ref ref="console" />
+    <root level="info">
+        <appender-ref ref="STDOUT" />
     </root>
+
+    <!-- dev env -->
+    <springProfile name="dev">
+        <logger name="org.springframework.boot" level="WARN" />
+        <logger name="org.springframework.web" level="DEBUG" />
+    </springProfile>
+
+    <!-- prod env -->
+    <springProfile name="prod">
+        <logger name="org.springframework.*" level="info" />
+    </springProfile>
 </configuration>

@@ -1,10 +1,7 @@
 package com.bakooza.bakooza.Service;
 
-import com.bakooza.bakooza.DTO.BoardRequestDTO;
-import com.bakooza.bakooza.DTO.BoardResponseDTO;
-import com.bakooza.bakooza.DTO.ImageResponseDTO;
+import com.bakooza.bakooza.DTO.*;
 import com.bakooza.bakooza.Entity.Board;
-import com.bakooza.bakooza.Entity.PostImage;
 import com.bakooza.bakooza.Repository.BoardRepository;
 import com.bakooza.bakooza.Repository.PostImageRepository;
 import com.bakooza.bakooza.Util.ErrorHandler.CustomException;
@@ -27,21 +24,21 @@ public class BoardServiceImpl implements BoardService {
 
     // 게시글 작성
     @Override
-    public Long save(final BoardRequestDTO params) {
+    public Long save(final BoardDTO params) {
         return boardRepository.save(params.toEntity()).getPostId();
     }
 
     // 게시판 조회
     @Override
     public Page<Board> findByCategoryId(final int categoryId, final Pageable pageable) {
-        return boardRepository.findByCategoryId(categoryId, pageable);
+        return boardRepository.findByCategoryId( pageable);
     }
 
     // 게시글 수정
     @Override
     public void update(final Long postId, final BoardRequestDTO params) {
         Board entity = boardRepository.findById(postId)
-            .orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND));
         entity.update(params.getTitle(), params.getContent(), params.getCategoryId(), params.getWriter());
     }
 
@@ -67,11 +64,11 @@ public class BoardServiceImpl implements BoardService {
 
     // 게시글 조회
     @Override
-    public BoardResponseDTO findById(final Long postId) {
+    public DetailBoardResponseDTO findById(final Long postId) {
         Board entity = boardRepository.findByPostIdAndIsDeleted(postId, 0)
             .orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND));
         entity.increaseViews(); // 조회수 증가
-        return new BoardResponseDTO(entity);
+        return new DetailBoardResponseDTO(entity);
     }
 
     // 해당 게시글의 이미지 찾기

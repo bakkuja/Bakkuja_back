@@ -46,7 +46,8 @@ public class LoginController {
         member.setProfileImage(userInfo.get("profileImage").toString());
 
         Boolean isMemberPresent = ms.findMemberById(member.getId()).isPresent();
-
+        log.info("ms.findMemberById(member.getId()).isPresent() = {}", member.getId());
+        log.info("isMemberPresent = {}", isMemberPresent);
         if(isMemberPresent == false) {
             ms.join(member);
         }
@@ -77,9 +78,8 @@ public class LoginController {
     }
 
     @GetMapping("hi")
-    public ResponseEntity<Object> Hello() {
-        log.info("asdasd");
-        return new ResponseEntity<>("hi~~", HttpStatus.OK);
+    public void Hello() {
+        ms.test();
     }
 
 }

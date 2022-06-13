@@ -20,16 +20,13 @@ public class Board {
 
     private String title; // 제목
 
-    @Column(name = "user_address")
+    @Column(name = "user_location")
     private String userLocation; // 작성자 주소
 
     private String content; // 내용
 
     @Column(name = "post_date")
     private LocalDateTime postDate = LocalDateTime.now(); // 생성일
-
-    @Column(name = "modified_date")
-    private LocalDateTime modifiedDate; // 수정일
 
     private String writer; // 작성자
 
@@ -45,8 +42,7 @@ public class Board {
     private int isDeleted; // 글쓴이가 글을 지웠는지
 
     @Builder
-    public Board(long postId, String title, String userLocation, String content, String writer,
-        int categoryId, long memberId) {
+    public Board(Long postId, String title, String userLocation, String content, String writer, int categoryId, long memberId) {
         this.postId = postId;
         this.title = title;
         this.userLocation = userLocation;
@@ -61,7 +57,6 @@ public class Board {
         this.content = content;
         this.categoryId = categoryId;
         this.writer = writer;
-        this.modifiedDate = LocalDateTime.now();
     }
 
     public void increaseViews() {
